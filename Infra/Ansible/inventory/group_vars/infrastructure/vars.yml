@@ -1,0 +1,11 @@
+---
+authentik_postgres_user: "{{ VAULT_AUTHENTIK_POSTGRES_USER }}"
+authentik_postgres_password: "{{ VAULT_AUTHENTIK_POSTGRES_PASSWORD }}"
+authentik_secret_key: "{{ VAULT_AUTHENTIK_SECRET_KEY }}"
+authentik_api_token: "{{ VAULT_AUTHENTIK_API_TOKEN }}"
+authentik_bootstrap_token: "{{ VAULT_AUTHENTIK_BOOTSTRAP_TOKEN }}"
+authentik_bootstrap_password: "{{ VAULT_AUTHENTIK_BOOTSTRAP_PASSWORD }}"
+authentik_bootstrap_email: "{{ VAULT_AUTHENTIK_BOOTSTRAP_EMAIL }}"
+authentik_email_password: "{{ VAULT_AUTHENTIK_EMAIL_PASSWORD }}"
+authentik_email_from: "{{ VAULT_AUTHENTIK_EMAIL_FROM }}"
+authentik_email_username: "{{ VAULT_AUTHENTIK_EMAIL_USERNAME }}"

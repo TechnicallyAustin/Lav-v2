@@ -3,6 +3,7 @@
   hosts: infrastructure
   become: true
   roles:
+    - role: docker
     - role: authentik
     - role: vaultwarden
     - role: watchdog

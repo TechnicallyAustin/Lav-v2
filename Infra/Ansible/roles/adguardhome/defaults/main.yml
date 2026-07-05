@@ -87,7 +87,10 @@ adguardhome_safebrowsing_cache_size: 1048576
 adguardhome_safeseach_cache_size: 1048576
 adguardhome_parental_cache_size: 1048576
 adguardhome_cache_time: 30
-adguardhome_rewrites: []
+adguardhome_rewrites: 
+  - domain: "authentik.platform.local"
+    answer: "192.168.0.212"
+    enabled: "true"
 adguardhome_blocked_services: []
 adguardhome_upstream_timeout: "10s"
 adguardhome_local_domain_name: "lan"

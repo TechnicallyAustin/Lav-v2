@@ -71,18 +71,18 @@ authentik_volume_labels: []
 # PostgreSQL settings
 # #############################
 authentik_postgres_db: "authentik"
-authentik_postgres_user: ""
-authentik_postgres_password: ""
+authentik_postgres_user: "authentik"
+authentik_postgres_password: "{{ authentik_postgres_password | default('changeme') }}"
 
 ##############################
 # Authentik settings
 ##############################
 
 # Base configuration
-authentik_subdomain: ""
-authentik_base_domain: ""
+authentik_subdomain: "authentik"
+authentik_base_domain: "platform.local"
 authentik_domain: "{{ authentik_subdomain }}.{{ authentik_base_domain }}"
-authentik_secret_key: ""
+authentik_secret_key: "{{ authentik_secret_key | default('changeme') }}"
 authentik_error_reporting_enabled: false
 
 # API
@@ -91,24 +91,25 @@ authentik_api_validate_certs: false
 authentik_api_call_timeout: 15
 authentik_api_call_retries: 10
 authentik_api_call_delay: 1
-authentik_api_token: ""
-authentik_token_callback_tasks: ""
+authentik_api_token: "{{ authentik_api_token | default('changeme') }}"
+authentik_token_callback_tasks: "Generate a secure random tasks and override this in vault"
 
 # Email configuration (optional)
 authentik_email_enabled: true
-authentik_email_host: ""
-authentik_email_port: ""
-authentik_email_username: ""
-authentik_email_password: ""
-authentik_email_use_tls: false
+authentik_email_host: "smtp.gmail.com"
+authentik_email_port: "587"
+authentik_email_username: "{{ authentik_email_username | default('changeme') }}"
+authentik_email_password: "{{ authentik_email_password | default('changeme') }}"
+authentik_email_use_tls: true
+authentik_email_use_ssl: true
 authentik_email_timeout: 10
-authentik_email_from: ""
+authentik_email_from: "{{ authentik_email_from | default('changeme') }}"
 
 # Bootstrap configuration
-authentik_bootstrap_enabled: false
-authentik_bootstrap_password: ""
-authentik_bootstrap_token: ""
-authentik_bootstrap_email: ""
+authentik_bootstrap_enabled: true
+authentik_bootstrap_password: "{{ authentik_bootstrap_password | default('changeme') }}"
+authentik_bootstrap_token: "{{ authentik_bootstrap_token | default('changeme') }}"
+authentik_bootstrap_email: "{{ authentik_bootstrap_email | default('changeme') }}"
 
 # Security settings
 authentik_log_level: info # trace, debug, info, warning, error
@@ -536,7 +537,7 @@ authentik_config:
           timeout: 30
           failure_result: false
       flow_stages_bindings:
-        - stage_name: "{{ hosting_domain }} - Identification Stage"
+        - stage_name: "{{ authentik_domain }} - Identification Stage"
           state: present
           evaluate_on_plan: false
           re_evaluate_policies: true

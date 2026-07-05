@@ -82,6 +82,25 @@
   register: authentik_external_networks_info
   loop: "{{ authentik_external_networks | default([]) }}"
 
+- name: Check if external networks exist
+  community.docker.docker_network_info:
+    name: "{{ item.name }}"
+  register: authentik_external_networks_info
+  loop: "{{ authentik_external_networks | default([]) }}"
+
+- name: Ensure external docker networks exist
+  community.docker.docker_network:
+    name: "{{ item.name }}"
+    driver: bridge
+    state: present
+  loop: "{{ authentik_external_networks | default([]) }}"
+
+- name: Refresh external network status
+  community.docker.docker_network_info:
+    name: "{{ item.name }}"
+  register: authentik_external_networks_info
+  loop: "{{ authentik_external_networks | default([]) }}"
+
 - name: Ensure app directory is present
   ansible.builtin.file:
     path: "{{ install_dir }}"
@@ -129,7 +148,8 @@
 
 - name: Check server readiness
   ansible.builtin.uri:
-    url: "http://{{ authentik_server_container_info.container.NetworkSettings.Networks[(authentik_managed_networks | first).name].IPAddress }}:{{ authentik_http_port
+    url:
+      "http://{{ authentik_server_container_info.container.NetworkSettings.Networks[(authentik_managed_networks | first).name].IPAddress }}:{{ authentik_http_port
       }}{{ item }}" # noqa:yaml[line-length]
     method: GET
     status_code: 200
@@ -141,7 +161,8 @@
 
 - name: Check worker readiness
   ansible.builtin.uri:
-    url: "http://{{ authentik_server_container_info.container.NetworkSettings.Networks[(authentik_managed_networks | first).name].IPAddress }}:{{ authentik_http_port
+    url:
+      "http://{{ authentik_server_container_info.container.NetworkSettings.Networks[(authentik_managed_networks | first).name].IPAddress }}:{{ authentik_http_port
       }}{{ item }}" # noqa:yaml[line-length]
     method: GET
     status_code: 200
