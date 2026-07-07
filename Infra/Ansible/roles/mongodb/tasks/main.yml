@@ -38,7 +38,10 @@
 
 - name: Verify that required string variables are defined
   ansible.builtin.assert:
-    that: "{{ req_var }} is defined and {{ req_var }} | length > 0 and {{ req_var }} != None"
+    that:
+      - "vars[req_var] is defined"
+      - "vars[req_var] | length > 0"
+      - "vars[req_var] != None"
     fail_msg: "{{ req_var }} needs to be set for the role to work"
     success_msg: "{{ req_var }} is defined"
   loop:
@@ -53,6 +56,7 @@
   register: mongodb_local_binary
 
 - name: Install MongoDB via package manager
+  # yamllint disable-line rule:line-length
   ansible.builtin.include_tasks: "{{ ansible_os_family | lower }}-pkg-install.yml"
   when:
     - not mongodb_local_binary.stat.exists
