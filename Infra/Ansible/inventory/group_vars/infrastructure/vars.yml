@@ -1,4 +1,5 @@
 ---
+
 authentik_postgres_user: "{{ VAULT_AUTHENTIK_POSTGRES_USER }}"
 authentik_postgres_password: "{{ VAULT_AUTHENTIK_POSTGRES_PASSWORD }}"
 authentik_secret_key: "{{ VAULT_AUTHENTIK_SECRET_KEY }}"

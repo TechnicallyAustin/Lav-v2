@@ -87,9 +87,15 @@ adguardhome_safebrowsing_cache_size: 1048576
 adguardhome_safeseach_cache_size: 1048576
 adguardhome_parental_cache_size: 1048576
 adguardhome_cache_time: 30
-adguardhome_rewrites: 
+adguardhome_wildcard_domain: "platform.local"
+adguardhome_wildcard_rewrite_answer: "192.168.0.211"
+
+adguardhome_rewrites:
+  - domain: "*.{{ adguardhome_wildcard_domain }}"
+    answer: "{{ adguardhome_wildcard_rewrite_answer }}"
+    enabled: "true"
   - domain: "authentik.platform.local"
-    answer: "192.168.0.212"
+    answer: "{{ adguardhome_wildcard_rewrite_answer }}"
     enabled: "true"
 adguardhome_blocked_services: []
 adguardhome_upstream_timeout: "10s"

@@ -86,6 +86,32 @@
     - brand.default_flows_slug.device_code is defined
     - brand.default_flows_slug.device_code | length > 0
 
+- name: Remove default flag from other brands before setting ours as default
+  ansible.builtin.uri:
+    url: "{{ authentik_api_url }}/api/v3/core/brands/{{ item }}/"
+    method: PATCH
+    headers:
+      Authorization: "Bearer {{ authentik_token }}"
+      Content-Type: "application/json"
+    body_format: json
+    body:
+      default: false
+    validate_certs: "{{ authentik_api_validate_certs }}"
+    status_code: [200]
+    timeout: "{{ authentik_api_call_timeout }}"
+  loop: "{{ other_default_uuids }}"
+  vars:
+    other_default_uuids: >-
+      {{
+        authentik_existing_brands.json.results
+        | rejectattr('domain', 'equalto', brand.domain)
+        | map(attribute='brand_uuid')
+        | list
+      }}
+  when:
+    - brand.default | default(false) | bool
+    - other_default_uuids | length > 0
+
 - name: "{{ ('Create' if new_brand else 'Update') ~ ' brand: ' ~ brand.domain }}"
   ansible.builtin.uri:
     url: "{{ authentik_api_url }}/api/v3/core/brands/{{ brand_uuid ~ '/' if not new_brand}}"

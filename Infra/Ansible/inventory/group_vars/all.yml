@@ -1,3 +1,4 @@
+---
 # geerlingguy.ntp overrides for Ubuntu 24.04
 ntp_enabled: true
 ntp_package: chrony

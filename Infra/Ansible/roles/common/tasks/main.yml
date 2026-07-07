@@ -1,8 +1,29 @@
 ---
-- name: Update apt Cache
+- name: Remove managed resolv.conf symlink
+  ansible.builtin.file:
+    path: /etc/resolv.conf
+    state: absent
+  become: true
+
+- name: Configure host DNS resolution
+  ansible.builtin.copy:
+    dest: /etc/resolv.conf
+    content: |
+      nameserver 1.1.1.1
+      nameserver 8.8.8.8
+      nameserver 192.168.0.110
+      search platform.local homelab
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+
+- name: Update apt cache
   ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
+    lock_timeout: 120
+  become: true
 
 - name: Upgrade installed packages
   ansible.builtin.apt:
@@ -43,13 +64,11 @@
     update_cache: true
   become: true
 
-- name: Point host DNS resolution at AdGuardHome
-  ansible.builtin.copy:
-    dest: /etc/resolv.conf
-    content: |
-      nameserver 192.168.0.110
-      search platform.local homelab
-    owner: root
-    group: root
-    mode: "0644"
+- name: Add local host alias for Authentik
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    regexp: '^192\.168\.0\.211\s+authentik\.platform\.local$'
+    line: '192.168.0.211 authentik.platform.local'
+    create: true
+    state: present
   become: true
