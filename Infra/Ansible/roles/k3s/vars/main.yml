@@ -137,9 +137,9 @@ k3s_ensure_directories_exist:
   - name: Data directory
     path: "{{ k3s_data_dir }}"
   - name: Default local storage path
-    path: "{{ k3s_runtime_config['default-local-storage-path'] | default(omit) }}"
+    path: "{{ k3s_runtime_config['default-local-storage-path'] | default('') }}"
   - name: Private registry config file
-    path: "{{ (k3s_runtime_config['private-registry'] | default(omit)) | dirname }}"
+    path: "{{ k3s_runtime_config['private-registry'] | default('') | dirname }}"
 
 # Config items that should not appear in k3s_server or k3s_agent
 k3s_config_exclude:
