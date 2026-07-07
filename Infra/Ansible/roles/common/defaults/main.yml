@@ -19,3 +19,4 @@ common_packages:
   - python3-pip
   - qemu-guest-agent
   - unzip
+  - ca-certificates

@@ -9,8 +9,9 @@
   ansible.builtin.deb822_repository:
     name: clickhouse
     types: deb
-    uris: http://repo.yandex.ru/clickhouse/deb/stable
-    suites: main
+    uris: https://packages.clickhouse.com/deb
+    suites: stable
+    components: main
     signed_by: "{{ clickhouse_apt_key_url }}"
     state: present
 

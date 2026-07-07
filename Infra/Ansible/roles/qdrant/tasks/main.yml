@@ -1,7 +1,7 @@
 ---
 - name: Create Data Directory - qdrant
   ansible.builtin.file:
-    src: "{{ qdrant_data_dir }}"
+    path: "{{ qdrant_data_dir }}"
     state: directory
     mode: "0755"
     owner: root
@@ -10,7 +10,7 @@
 - name: Pull the Docker Image - qdrant
   community.docker.docker_image:
     name: "{{ qdrant_image }}:{{ qdrant_version }}"
-    src: pull
+    source: pull
 
 - name: Run the Docker Container - qdrant
   community.docker.docker_container:
@@ -22,7 +22,7 @@
       - "{{ qdrant_http_port }}:6333"
       - "{{ qdrant_grpc_port }}:6334"
     volumes:
-      - "{{ qdrant_data_dir }}://qdrant/storage"
+      - "{{ qdrant_data_dir }}:/qdrant/storage"
     env:
       IS_PERSISTENT: "TRUE"
 
