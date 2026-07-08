@@ -28,7 +28,7 @@ platform = {
     disk_size    = 50
     datastore_id = "vm-storage"
     bridge       = "vmbr0"
-    ip_address   = "192.168.0.214/24"
+    ip_address   = "192.168.0.217/24"
     gateway      = "192.168.0.1"
   }
   k3s-worker-01 = {

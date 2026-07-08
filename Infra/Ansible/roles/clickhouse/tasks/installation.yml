@@ -2,23 +2,29 @@
 # file: clickhouse/tasks/installation.yml
 
 - name: Make sure the CA certificates are available
-  apt:
+  ansible.builtin.apt:
     pkg: ca-certificates
 
-- name: Add ClickHouse repository key
-  apt_key:
-    id: "{{ clickhouse_apt_key_id }}"
-    url: "{{ clickhouse_apt_key_url }}"
-
 - name: Add ClickHouse repository
-  apt_repository:
-    repo: "{{ clickhouse_apt_repository }}"
+  ansible.builtin.deb822_repository:
+    name: clickhouse
+    types: deb
+    uris: https://packages.clickhouse.com/deb
+    suites: stable
+    components: main
+    signed_by: "{{ clickhouse_apt_key_url }}"
+    state: present
+  register: __clickhouse_repo
+
+- name: Refresh apt cache after adding ClickHouse repository
+  ansible.builtin.apt:
+    update_cache: true
+  when: __clickhouse_repo.changed
+  become: true
 
 - name: Install ClickHouse packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ item.pkg }}"
     state: "{{ item.state }}"
-    update_cache: yes
-    cache_valid_time: 600
   with_items:
     - "{{ clickhouse_apt_packages }}"

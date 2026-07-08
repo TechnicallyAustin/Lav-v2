@@ -104,6 +104,25 @@
         label: "{{ user.username }}"
         loop_var: user
 
+    - name: Get existing users (when list was empty)
+      ansible.builtin.uri:
+        url: "{{ authentik_api_url }}/api/v3/core/users/?page_size=10000"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ authentik_token }}"
+        validate_certs: "{{ authentik_api_validate_certs }}"
+        status_code: [200]
+        timeout: "{{ authentik_api_call_timeout }}"
+      register: _authentik_users_guard
+      when: authentik_existing_users is not defined or authentik_existing_users.json is not defined
+      retries: "{{ authentik_api_call_retries }}"
+      delay: "{{ authentik_api_call_delay }}"
+
+    - name: Set existing users from guard result
+      ansible.builtin.set_fact:
+        authentik_existing_users: "{{ _authentik_users_guard }}"
+      when: not (_authentik_users_guard.skipped | default(false))
+
     - name: Remove other users
       ansible.builtin.uri:
         url: "{{ authentik_api_url }}/api/v3/core/users/{{ item }}/"
@@ -144,6 +163,25 @@
       loop_control:
         label: "{{ token.identifier }}"
         loop_var: token
+
+    - name: Get existing tokens (when list was empty)
+      ansible.builtin.uri:
+        url: "{{ authentik_api_url }}/api/v3/core/tokens/?page_size=10000"
+        method: GET
+        headers:
+          Authorization: "Bearer {{ authentik_token }}"
+        validate_certs: "{{ authentik_api_validate_certs }}"
+        status_code: [200]
+        timeout: "{{ authentik_api_call_timeout }}"
+      register: _authentik_tokens_guard
+      when: authentik_existing_tokens is not defined or authentik_existing_tokens.json is not defined
+      retries: "{{ authentik_api_call_retries }}"
+      delay: "{{ authentik_api_call_delay }}"
+
+    - name: Set existing tokens from guard result
+      ansible.builtin.set_fact:
+        authentik_existing_tokens: "{{ _authentik_tokens_guard }}"
+      when: not (_authentik_tokens_guard.skipped | default(false))
 
     - name: Remove other tokens
       ansible.builtin.uri:
@@ -203,6 +241,7 @@
   when:
     - _authentik_config.identities.users.remove_bootstrap | bool
     - user_to_delete is not none
+    - authentik_token != authentik_bootstrap_token
   changed_when: true
   retries: "{{ authentik_api_call_retries }}"
   delay: "{{ authentik_api_call_delay }}"

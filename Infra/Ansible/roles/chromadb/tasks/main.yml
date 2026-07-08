@@ -1,7 +1,7 @@
 ---
 - name: Create Data Directory - ChromaDB
   ansible.builtin.file:
-    src: "{{ chromadb_data_dir }}"
+    path: "{{ chromadb_data_dir }}"
     state: directory
     mode: "0755"
     owner: root
@@ -10,7 +10,7 @@
 - name: Pull the Docker Image - ChromaDB
   community.docker.docker_image:
     name: "{{ chromadb_image }}:{{ chromadb_version }}"
-    src: pull
+    source: pull
 
 - name: Run the Docker Container - ChromaDB
   community.docker.docker_container:
@@ -21,7 +21,7 @@
     published_ports:
       - "{{ chromadb_port }}:8000"
     volumes:
-      - "{{ chromadb_data_dir }}://chroma/chroma"
+      - "{{ chromadb_data_dir }}:/chroma/chroma"
     env:
       IS_PERSISTENT: "TRUE"
 
@@ -32,4 +32,4 @@
 
 - name: Show Container Status - ChromaDB
   ansible.builtin.debug:
-    msg: "ChromaDB is running : {{ chroma_info.container.State.Running}}"
+    msg: "ChromaDB is running : {{ chroma_info.container.State.Running }}"

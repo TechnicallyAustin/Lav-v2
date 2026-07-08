@@ -1,10 +1,22 @@
+# Terraform
 *.tfstate
 *.tfstate.*
 .terraform/
-
-.env
 *.auto.tfvars
 secrets.tfvars
-TASKS.MD
+
+# Environment / secrets
+.env
+**/.env
+
+# Keys and certificates
+*.pem
+*.key
+*.p12
+id_rsa*
+id_ed25519*
+kubeconfig*
+
+# Docs — personal guides stay local, only state docs are tracked
 Docs/*
 

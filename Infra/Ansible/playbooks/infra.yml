@@ -1,8 +1,13 @@
 ---
 - name: Core Infrastructure
   hosts: infrastructure
+  pre_tasks:
+    - name: Verify external DNS works
+      ansible.builtin.command: getent hosts download.docker.com
+      changed_when: false
   become: true
   roles:
+    - role: docker
     - role: authentik
     - role: vaultwarden
     - role: watchdog
