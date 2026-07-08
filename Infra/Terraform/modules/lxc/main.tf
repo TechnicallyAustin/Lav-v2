@@ -49,7 +49,7 @@ resource "proxmox_virtual_environment_container" "this" {
     }
     user_account {
       password = var.lxc_password
-      keys     = var.ssh_keys != "" ? [var.ssh_keys] : []
+      keys     = var.ssh_keys
     }
 
   }
@@ -61,7 +61,7 @@ resource "proxmox_virtual_environment_container" "this" {
     connection {
       type     = "ssh"
       user     = "root"
-      private_key = file("~/.ssh/id_ed25519")
+      private_key = try(file(pathexpand("~/.ssh/id_ed25519")), "")
       password = var.lxc_password
       host     = split("/", var.ip_address)[0]
     }
