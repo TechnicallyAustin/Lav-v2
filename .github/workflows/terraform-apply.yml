@@ -21,7 +21,7 @@ jobs:
       group: terraform-apply-dev
       cancel-in-progress: false
     defaults:
-      run: 
+      run:
         working-directory: ${{ env.TF_WORKING_DIR }}
     steps:
       - name: Checkout merged main commit
@@ -54,8 +54,6 @@ jobs:
           TF_VAR_vm_password: ${{ secrets.VM_PASSWORD }}
         run: terraform plan -input=false -out=tfplan
 
-
-
       - name: Apply Terraform
         env:
           TF_VAR_proxmox_api_token_id: ${{ secrets.PROXMOX_API_TOKEN_ID }}
@@ -66,4 +64,3 @@ jobs:
           TF_VAR_vm_username: ${{ secrets.VM_USERNAME }}
           TF_VAR_vm_password: ${{ secrets.VM_PASSWORD }}
         run: terraform apply -input=false tfplan
-

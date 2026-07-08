@@ -50,6 +50,7 @@ variable "ssh_keys" {
   description = "SSH public keys to add to the LXC user account"
   type        = list(string)
   sensitive   = true
+  default     = []
 }
 
 variable "nesting" {
