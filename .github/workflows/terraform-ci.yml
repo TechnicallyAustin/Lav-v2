@@ -19,7 +19,6 @@ env:
   TF_VERSION: "1.13.4"
   TF_WORKING_DIR: "Infra/Terraform/environments/dev"
 
-
 # 5. jobs
 jobs:
   plan-terraform:
@@ -72,4 +71,3 @@ jobs:
           name: terraform-dev-plan
           path: ${{ env.TF_WORKING_DIR }}/tfplan
           if-no-files-found: error
-          

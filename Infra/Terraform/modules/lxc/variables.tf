@@ -46,6 +46,13 @@ variable "unprivileged" {
   default     = true
 }
 
+variable "ssh_keys" {
+  description = "SSH public keys to add to the LXC user account"
+  type        = list(string)
+  sensitive   = true
+  default     = []
+}
+
 variable "nesting" {
   description = "Enable nesting support"
   type        = bool
@@ -127,11 +134,4 @@ variable "lxc_password" {
   description = "Password for the LXC user"
   type        = string
   sensitive   = true
-}
-
-variable "ssh_keys" {
-  description = "SSH public keys to add to the LXC user account"
-  type        = string
-  sensitive   = true
-  default     = ""
 }
