@@ -1,0 +1,2 @@
+---
+clickhouse_max_open_files: 1048576

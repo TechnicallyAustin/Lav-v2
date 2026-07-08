@@ -1,7 +1,7 @@
 ---
 - name: Create Data Directory - minio
   ansible.builtin.file:
-    src: "{{ minio_data_dir }}"
+    path: "{{ minio_data_dir }}"
     state: directory
     mode: "0750"
     owner: root
@@ -10,7 +10,7 @@
 - name: Pull the Docker Image - minio
   community.docker.docker_image:
     name: "{{ minio_image }}:{{ minio_version }}"
-    src: pull
+    source: pull
 
 # Two ports: 9000 is the S3 API (what Nextcloud connects to),
 # 9001 is the web console so you can browse buckets in a browser.
@@ -39,4 +39,4 @@
 
 - name: Show Container Status - minio
   ansible.builtin.debug:
-    msg: "minio is running : {{ minio_info.container.State.Running}}"
+    msg: "minio is running : {{ minio_info.container.State.Running }}"

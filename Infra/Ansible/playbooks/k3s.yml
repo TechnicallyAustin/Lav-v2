@@ -6,5 +6,6 @@
     k3s_release_version: "v1.32.0+k3s1"
     k3s_server_additional_manifests_dir: "files/manifests"
     k3s_become: true
+    k3s_registration_address: "192.168.0.217"
   roles:
     - role: k3s

@@ -1,12 +1,13 @@
+---
 - name: Data Platform
   hosts: data
   become: true
   roles:
+    - role: docker
     - role: postgresql
     - role: qdrant
     - role: redis
     - role: clickhouse
-    - role: chromadb
     - role: minio
     - role: mongodb
     - role: backup

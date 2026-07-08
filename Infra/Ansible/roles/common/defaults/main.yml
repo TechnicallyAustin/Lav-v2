@@ -1,5 +1,13 @@
 ---
 common_timezone: America/Phoenix
+common_dns_nameservers:
+  - 8.8.8.8
+  - 1.1.1.1
+  - 192.168.0.110
+
+common_dns_search:
+  - platform.local
+  - homelab
 
 common_packages:
   - curl
@@ -11,3 +19,4 @@ common_packages:
   - python3-pip
   - qemu-guest-agent
   - unzip
+  - ca-certificates

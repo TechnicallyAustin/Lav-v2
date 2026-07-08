@@ -30,6 +30,18 @@
     quiet: true
   no_log: true
 
+- name: Get authentik server container info
+  community.docker.docker_container_info:
+    name: "{{ authentik_server_container_name }}"
+  register: _authentik_configure_server_info
+
+- name: Set API URL to container's direct network IP
+  ansible.builtin.set_fact:
+    authentik_api_url: >-
+      http://{{
+        _authentik_configure_server_info.container.NetworkSettings.Networks[install_app_name + '-egress'].IPAddress
+      }}:{{ authentik_http_port }}
+
 - name: Test Authentik connectivity and tokens
   block:
     - name: Build list of tokens to test
@@ -87,17 +99,19 @@
         path: "{{ authentik_volume_media_infos.volume.Mountpoint }}/{{ item }}"
         state: directory
         # recurse: true
-        owner: "101000"
-        group: "101000"
+        owner: "1000"
+        group: "1000"
         mode: "0755"
       loop:
         - "public/branding"
 
     - name: Ensure media files are present
-      community.docker.docker_container_copy_into:
-        container: "{{ authentik_server_container_name }}"
-        path: "{{ item.src }}"
-        container_path: "/data/media/{{ item.path }}"
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ authentik_volume_media_infos.volume.Mountpoint }}/{{ item.path }}"
+        owner: "1000"
+        group: "1000"
+        mode: "0644"
         force: false
       loop: "{{ query('community.general.filetree', 'files/media/') }}"
       when: item.state == 'file'
@@ -110,10 +124,12 @@
       register: authentik_volume_templates_infos
 
     - name: Ensure template files are present
-      community.docker.docker_container_copy_into:
-        container: "{{ authentik_server_container_name }}"
-        path: "{{ item.src }}"
-        container_path: "/templates/{{ item.path }}"
+      ansible.builtin.copy:
+        src: "{{ item.src }}"
+        dest: "{{ authentik_volume_templates_infos.volume.Mountpoint }}/{{ item.path }}"
+        owner: "1000"
+        group: "1000"
+        mode: "0644"
         force: false
       loop: "{{ query('community.general.filetree', 'files/templates/') }}"
       when: item.state == 'file'
