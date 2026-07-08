@@ -19,9 +19,9 @@ roles:
     src: arillso.traefik
     version: "1.0.2"
 
-  #---------------------------#
-  #       Infrastructure      #
-  #---------------------------#
+  # --------------------------- #
+  #        Infrastructure       #
+  # --------------------------- #
 
   # Identity - Authentik
   - name: authentik
@@ -38,9 +38,9 @@ roles:
     src: geerlingguy.ntp
     version: "2.5.0"
 
-  #---------------------------#
-  #           Data            #
-  #---------------------------#
+  # --------------------------- #
+  #            Data             #
+  # --------------------------- #
 
   # Database - Postgres SQL - Extend role into Pg Vector
   - name: postgresql
@@ -65,12 +65,12 @@ roles:
   # Qdrant — no Galaxy role exists, built in custom data_tier role
   # ChromaDB — no Galaxy role exists, built in custom data_tier role
   # MinIO — no strong Galaxy role, built in custom data_tier role
-  # Uptime Kuma Watch Dog - no strong Galaxy role, built in custom data_tier role
+  # Uptime Kuma Watch Dog - no strong Galaxy role, built in custom data_tier
   # Backup Cron - Write Custom Role
 
-  #---------------------------#
-  #           Platform        #
-  #---------------------------#
+  # --------------------------- #
+  #            Platform         #
+  # --------------------------- #
 
   # Compute - Kubernetes (k3's + Docker)
   - name: docker
