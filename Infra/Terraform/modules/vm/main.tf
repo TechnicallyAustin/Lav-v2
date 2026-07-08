@@ -18,9 +18,15 @@ resource "proxmox_virtual_environment_vm" "this" {
   #     ignore_changes = [clone]
   # }
 
-  clone { vm_id = var.clone_vm_id }
+  clone {
+    vm_id        = var.clone_vm_id
+    datastore_id = var.datastore_id
+  }
 
-  cpu { cores = var.cores }
+  cpu {
+    cores = var.cores
+    type  = "host"
+  }
   memory { dedicated = var.memory_mb }
 
   disk {

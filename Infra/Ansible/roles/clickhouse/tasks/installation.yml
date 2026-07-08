@@ -14,12 +14,17 @@
     components: main
     signed_by: "{{ clickhouse_apt_key_url }}"
     state: present
+  register: __clickhouse_repo
+
+- name: Refresh apt cache after adding ClickHouse repository
+  ansible.builtin.apt:
+    update_cache: true
+  when: __clickhouse_repo.changed
+  become: true
 
 - name: Install ClickHouse packages
   ansible.builtin.apt:
     name: "{{ item.pkg }}"
     state: "{{ item.state }}"
-    update_cache: true
-    cache_valid_time: 600
   with_items:
     - "{{ clickhouse_apt_packages }}"

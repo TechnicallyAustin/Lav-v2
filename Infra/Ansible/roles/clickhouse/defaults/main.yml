@@ -9,9 +9,9 @@ clickhouse_apt_repository: "deb https://packages.clickhouse.com/deb stable main"
 clickhouse_apt_packages:
   - pkg: "clickhouse-client"
     state: "present"
-  - pkg: "clickhouse-server-common"
+  - pkg: "clickhouse-server"
     state: "present"
-  - pkg: "clickhouse-server-base"
+  - pkg: "clickhouse-common-static"
     state: "present"
   - pkg: "clickhouse-common-dbg"
     state: "absent"
@@ -121,7 +121,7 @@ clickhouse_keep_alive_timeout: 3
 
 clickhouse_max_concurrent_queries: 100
 
-clickhouse_max_open_files: maximum
+clickhouse_max_open_files: 1048576
 
 clickhouse_uncompressed_cache_size: 8589934592
 
