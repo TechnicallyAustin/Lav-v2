@@ -299,7 +299,7 @@ filtering:
 {% else %}
 
 {% for rewrite in adguardhome_rewrites %}
-    - domain: {{ rewrite.domain }}
+    - domain: "{{ rewrite.domain }}"
       answer: {{ rewrite.answer }}
       enabled: {{ rewrite.enabled | default('true') }}
 {% endfor %}
