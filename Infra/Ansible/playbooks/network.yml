@@ -64,6 +64,54 @@
         mode: "0755"
       become: true
 
+    - name: Create Traefik certs directory
+      ansible.builtin.file:
+        path: /etc/traefik/certs
+        state: directory
+        owner: root
+        group: root
+        mode: "0750"
+      become: true
+
+    - name: Copy TLS certificate
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'HOME') }}/lab-certs/_wildcard.platform.local+1.pem"
+        dest: /etc/traefik/certs/platform.local.crt
+        owner: root
+        group: root
+        mode: "0644"
+      become: true
+      notify: Restart traefik container
+
+    - name: Copy TLS private key
+      ansible.builtin.copy:
+        src: "{{ lookup('env', 'HOME') }}/lab-certs/_wildcard.platform.local+1-key.pem"
+        dest: /etc/traefik/certs/platform.local.key
+        owner: root
+        group: root
+        mode: "0600"
+      become: true
+      notify: Restart traefik container
+
+    - name: Deploy Traefik TLS store config
+      ansible.builtin.copy:
+        dest: /etc/traefik/conf.d/tls.yml
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          tls:
+            certificates:
+              - certFile: /etc/traefik/certs/platform.local.crt
+                keyFile: /etc/traefik/certs/platform.local.key
+            stores:
+              default:
+                defaultCertificate:
+                  certFile: /etc/traefik/certs/platform.local.crt
+                  keyFile: /etc/traefik/certs/platform.local.key
+      become: true
+      notify: Restart traefik container
+
     - name: Deploy Traefik service routes
       ansible.builtin.copy:
         dest: "/etc/traefik/conf.d/{{ item.name }}.yml"
@@ -81,7 +129,8 @@
                   rule: "Host(`authentik.platform.local`)"
                   service: authentik
                   entryPoints:
-                    - web_http
+                    - web_https
+                  tls: {}
               services:
                 authentik:
                   loadBalancer:
@@ -96,7 +145,8 @@
                   rule: "Host(`vaultwarden.platform.local`)"
                   service: vaultwarden
                   entryPoints:
-                    - web_http
+                    - web_https
+                  tls: {}
               services:
                 vaultwarden:
                   loadBalancer:
@@ -111,7 +161,8 @@
                   rule: "Host(`watchdog.platform.local`)"
                   service: watchdog
                   entryPoints:
-                    - web_http
+                    - web_https
+                  tls: {}
               services:
                 watchdog:
                   loadBalancer:
@@ -126,7 +177,8 @@
                   rule: "Host(`minio.platform.local`)"
                   service: minio
                   entryPoints:
-                    - web_http
+                    - web_https
+                  tls: {}
               services:
                 minio:
                   loadBalancer:
