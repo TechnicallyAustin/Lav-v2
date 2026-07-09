@@ -36,6 +36,18 @@
       become: true
       when: is_lxc | default(false) | bool
 
+    - name: Disable systemd-resolved DNS stub listener
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNSStubListener='
+        line: 'DNSStubListener=no'
+
+    - name: Restart systemd-resolved to free port 53
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: restarted
+      become: true
+
   roles:
     - role: docker
     - role: tailscale

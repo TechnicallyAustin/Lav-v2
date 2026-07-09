@@ -1,2 +1,6 @@
 ---
 tailscale_authkey: "{{ VAULT_TS_AUTH_KEY }}"
+
+adguardhome_webhost: "0.0.0.0"
+adguardhome_dnshosts:
+  - "0.0.0.0"
