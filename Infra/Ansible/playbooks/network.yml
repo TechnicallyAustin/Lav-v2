@@ -53,3 +53,91 @@
     - role: tailscale
     - role: adguardhome
     - role: traefik
+
+  post_tasks:
+    - name: Create Traefik conf.d directory
+      ansible.builtin.file:
+        path: /etc/traefik/conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+      become: true
+
+    - name: Deploy Traefik service routes
+      ansible.builtin.copy:
+        dest: "/etc/traefik/conf.d/{{ item.name }}.yml"
+        owner: root
+        group: root
+        mode: "0644"
+        content: "{{ item.config | to_nice_yaml }}"
+      become: true
+      loop:
+        - name: authentik
+          config:
+            http:
+              routers:
+                authentik:
+                  rule: "Host(`authentik.platform.local`)"
+                  service: authentik
+                  entryPoints:
+                    - web_http
+              services:
+                authentik:
+                  loadBalancer:
+                    servers:
+                      - url: "http://192.168.0.212:9000"
+
+        - name: vaultwarden
+          config:
+            http:
+              routers:
+                vaultwarden:
+                  rule: "Host(`vaultwarden.platform.local`)"
+                  service: vaultwarden
+                  entryPoints:
+                    - web_http
+              services:
+                vaultwarden:
+                  loadBalancer:
+                    servers:
+                      - url: "http://192.168.0.212:8080"
+
+        - name: watchdog
+          config:
+            http:
+              routers:
+                watchdog:
+                  rule: "Host(`watchdog.platform.local`)"
+                  service: watchdog
+                  entryPoints:
+                    - web_http
+              services:
+                watchdog:
+                  loadBalancer:
+                    servers:
+                      - url: "http://192.168.0.212:3001"
+
+        - name: minio
+          config:
+            http:
+              routers:
+                minio:
+                  rule: "Host(`minio.platform.local`)"
+                  service: minio
+                  entryPoints:
+                    - web_http
+              services:
+                minio:
+                  loadBalancer:
+                    servers:
+                      - url: "http://192.168.0.213:9003"
+      notify: Restart traefik container
+
+  handlers:
+    - name: Restart traefik container
+      community.docker.docker_container:
+        name: "{{ traefik_container_name }}"
+        state: started
+        restart: true
+      become: true

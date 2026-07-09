@@ -54,9 +54,9 @@ services:
     command: server
     networks:
 {{ authentik_server_networks | to_nice_yaml | indent(6, first=true) }}
-    expose:
-      - {{ authentik_http_port }}
-      - {{ authentik_https_port }}
+    ports:
+      - "0.0.0.0:{{ authentik_http_port }}:{{ authentik_http_port }}"
+      - "0.0.0.0:{{ authentik_https_port }}:{{ authentik_https_port }}"
     volumes:
       - {{ authentik_volume_prefix }}-media:/data/media
       - {{ authentik_volume_prefix }}-templates:/templates

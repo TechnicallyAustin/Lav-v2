@@ -4,3 +4,13 @@ tailscale_authkey: "{{ VAULT_TS_AUTH_KEY }}"
 adguardhome_webhost: "0.0.0.0"
 adguardhome_dnshosts:
   - "0.0.0.0"
+
+# Mount conf.d into Traefik so it can read file provider routes
+traefik_add_volumes:
+  - "/etc/traefik/conf.d:/etc/traefik/conf.d:ro"
+
+# Add file provider alongside the existing Docker provider
+traefik_confkey_providers:
+  file:
+    directory: /etc/traefik/conf.d
+    watch: true
