@@ -1,1 +1,5 @@
 ---
+k3s_server_manifests_templates:
+  - name: "k3s-server-manifests"
+    src: "k3s-server-manifests.j2"
+    dest: "/etc/rancher/k3s/manifests/k3s-server-manifests.yml"
