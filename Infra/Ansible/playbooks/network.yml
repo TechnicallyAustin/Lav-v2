@@ -169,6 +169,22 @@
                     servers:
                       - url: "http://192.168.0.212:3001"
 
+        - name: argocd
+          config:
+            http:
+              routers:
+                argocd:
+                  rule: "Host(`argocd.platform.local`)"
+                  service: argocd
+                  entryPoints:
+                    - web_https
+                  tls: {}
+              services:
+                argocd:
+                  loadBalancer:
+                    servers:
+                      - url: "http://192.168.0.217:80"
+
         - name: minio
           config:
             http:

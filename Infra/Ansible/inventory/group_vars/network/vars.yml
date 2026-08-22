@@ -18,3 +18,35 @@ traefik_confkey_providers:
   file:
     directory: /etc/traefik/conf.d
     watch: true
+
+# Overrides the adguardhome role's default rewrite list (role: bcook254.adguardhome).
+# Keep this here instead of editing the role's defaults — role defaults get
+# clobbered by `ansible-galaxy install -r requirements.yml`.
+#
+# The wildcard entry keeps every *.platform.local HTTP service routed through
+# the Traefik edge (192.168.0.211) as before. The explicit entries below are
+# more-specific matches that win over the wildcard for raw-protocol data
+# services, pointing straight at data_01 so they're reachable by hostname:port
+# without going through Traefik (which can't route non-HTTP protocols).
+adguardhome_rewrites:
+  - domain: "*.platform.local"
+    answer: "192.168.0.211"
+    enabled: "true"
+  - domain: "authentik.platform.local"
+    answer: "192.168.0.211"
+    enabled: "true"
+  - domain: "postgres.platform.local"
+    answer: "192.168.0.213"
+    enabled: "true"
+  - domain: "redis.platform.local"
+    answer: "192.168.0.213"
+    enabled: "true"
+  - domain: "mongodb.platform.local"
+    answer: "192.168.0.213"
+    enabled: "true"
+  - domain: "clickhouse.platform.local"
+    answer: "192.168.0.213"
+    enabled: "true"
+  - domain: "qdrant.platform.local"
+    answer: "192.168.0.213"
+    enabled: "true"
