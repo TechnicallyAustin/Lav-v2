@@ -1,0 +1,50 @@
+---
+controllers:
+  main:
+    containers:
+      main:
+        env:
+          # Dedicated Postgres from manifests/postgres.yaml — not the
+          # shared data_01 instance. See HELM-DEPLOYMENT-GUIDE.md Q1 for
+          # why (VectorChord extension requirement).
+          DB_HOSTNAME: immich-postgresql-rw
+          DB_USERNAME: immich
+          DB_DATABASE_NAME: immich
+          DB_PASSWORD:
+            valueFrom:
+              secretKeyRef:
+                name: immich-postgres-user
+                key: password
+
+immich:
+  persistence:
+    library:
+      # Must already exist — this chart does not create it. Defined in
+      # manifests/postgres.yaml alongside the Postgres PVC.
+      existingClaim: immich-library
+
+# Job queue cache — chart-bundled, not the shared data_01 Redis. Disposable
+# by design (chart itself defaults its persistence to emptyDir).
+valkey:
+  enabled: true
+
+server:
+  enabled: true
+  ingress:
+    main:
+      enabled: true
+      className: traefik
+      # No nginx-ingress annotations here — the chart's own example values
+      # include nginx.ingress.kubernetes.io/proxy-body-size, which does
+      # nothing under Traefik. See HELM-DEPLOYMENT-GUIDE.md Q5.
+      annotations: {}
+      hosts:
+        - host: immich.platform.local
+          paths:
+            - path: "/"
+              service:
+                identifier: main
+      tls: []
+
+machine-learning:
+  enabled: true

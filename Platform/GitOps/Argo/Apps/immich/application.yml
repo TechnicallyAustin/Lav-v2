@@ -1,0 +1,44 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+
+metadata:
+  name: immich
+  namespace: argocd
+
+spec:
+  project: default
+
+  sources:
+    # Source 1: remote Immich Helm chart
+    - repoURL: https://immich-app.github.io/immich-charts
+      chart: immich
+      targetRevision: 0.13.1
+
+      helm:
+        valueFiles:
+          - $values/Platform/GitOps/Argo/Apps/immich/values.yml
+
+    # Source 2: this repo's values.yml, referenced by Source 1 above
+    - repoURL: https://github.com/TechnicallyAustin/Lab-v2
+      targetRevision: main
+      ref: values
+
+    # Source 3: the dedicated Postgres (chart doesn't bundle a database —
+    # see HELM-DEPLOYMENT-GUIDE.md, Question 1). Plain manifest directory,
+    # applied as-is, unrelated to the $values ref above.
+    - repoURL: https://github.com/TechnicallyAustin/Lab-v2
+      targetRevision: main
+      path: Platform/GitOps/Argo/Apps/immich/manifests
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: immich
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+    syncOptions:
+      - CreateNamespace=true
